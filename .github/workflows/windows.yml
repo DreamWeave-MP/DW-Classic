@@ -32,7 +32,7 @@ jobs:
       - name: Clone
         working-directory: C:\
         run: |
-          git clone https://github.com/DreamWeave-MP/Dreamweave.git
+          git clone https://github.com/DreamWeave-MP/DW-Classic.git
           cd Dreamweave
           git checkout ${{ github.head_ref }}
 
@@ -62,8 +62,6 @@ jobs:
       - name: Install Building Dependencies
         if: steps.cache-WinDeps.outputs.cache-hit != 'true'
         run: |
-          pwd
-          ls -R ..
           curl -o CrabNet.7z -L https://github.com/DreamWeave-MP/CrabNet/releases/download/Stable-CI/CrabNet-${{ runner.os }}-${{ matrix.BUILD_TYPE }}.7z
           7z x -y CrabNet.7z -oextern/raknet
           CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022
@@ -71,9 +69,7 @@ jobs:
       - name: Configure
         if: steps.cache-WinDeps.outputs.cache-hit == 'true'
         run: |
-          pwd
-          ls -R ..
-          C:/Dreamweave/CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022 -d -e
+          CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022 -d -e
 
       - name: Build
         run: |
