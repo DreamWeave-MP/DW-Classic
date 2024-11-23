@@ -3,7 +3,7 @@ name: Windows Build & Test
 defaults:
   run:
     shell: bash
-    working-directory: C:\Dreamweave
+    working-directory: C:\DW-Classic
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
         working-directory: C:\
         run: |
           git clone https://github.com/DreamWeave-MP/DW-Classic.git
-          cd Dreamweave
+          cd DW-Classic
           git checkout ${{ github.head_ref }}
 
       - name: Prime ccache
