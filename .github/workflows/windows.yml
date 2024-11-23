@@ -1,5 +1,10 @@
 name: Windows Build & Test
 
+defaults:
+  run:
+    shell: bash
+    working-directory: C:\Dreamweave
+
 on:
   push:
     branches:
@@ -15,7 +20,6 @@ on:
 env:
   BUILD_TYPE: Release
   GIT_TERMINAL_PROMPT: 0
-  working-directory: C:\Dreamweave
 
 jobs:
   Windows:
@@ -26,7 +30,6 @@ jobs:
 
     steps:
       - name: Clone
-        shell: bash
         working-directory: C:\
         run: |
           git clone https://github.com/DreamWeave-MP/Dreamweave.git
@@ -58,23 +61,21 @@ jobs:
 
       - name: Install Building Dependencies
         if: steps.cache-WinDeps.outputs.cache-hit != 'true'
-        shell: bash
-        working-directory: ${{ env.working-directory }}
         run: |
+          pwd
+          ls -R
           curl -o CrabNet.7z -L https://github.com/DreamWeave-MP/CrabNet/releases/download/Stable-CI/CrabNet-${{ runner.os }}-${{ matrix.BUILD_TYPE }}.7z
           7z x -y CrabNet.7z -oextern/raknet
-          C:/Dreamweave/CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022
+          CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022
 
       - name: Configure
         if: steps.cache-WinDeps.outputs.cache-hit == 'true'
-        shell: bash
-        working-directory: ${{ env.working-directory }}
         run: |
+          pwd
+          ls -R
           C:/Dreamweave/CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022 -d -e
 
       - name: Build
-        shell: bash
-        working-directory: ${{ env.working-directory }}
         run: |
           cd MSVC2022_64_Ninja
           source activate_msvc.sh
@@ -82,12 +83,10 @@ jobs:
 
 
       - name: Package
-        shell: bash
-        working-directory: ${{ env.working-directory }}
         run: CI/make_package.msvc.sh ${{ matrix.BUILD_TYPE }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.working-directory }}/dreamweave-build
+          path: C:/Dreamweave/dreamweave-build
           name: dreamweave_windows-${{ matrix.BUILD_TYPE }}
