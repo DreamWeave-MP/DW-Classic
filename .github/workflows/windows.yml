@@ -70,7 +70,7 @@ jobs:
         shell: bash
         working-directory: ${{ env.working-directory }}
         run: |
-          CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022 -d -e
+          C:/Dreamweave/Dreamweave/CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022 -d -e
 
       - name: Build
         shell: bash
