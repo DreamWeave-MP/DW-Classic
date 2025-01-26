@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         build_type: [ Release ]
-    runs-on: windows-2022
+    runs-on: windows-2019
 
     steps:
       - name: Clone
@@ -55,8 +55,8 @@ jobs:
             C:/Dreamweave/deps/SDL2-2.24.0/
             C:/Dreamweave/deps/zlib-1.2.11-msvc2017-win64/
             C:/Dreamweave/extern/raknet
-            C:/Dreamweave/MSVC2022_64_Ninja/deps/
-            C:/Dreamweave/MSVC2022_64_Ninja/*.ninja
+            C:/Dreamweave/MSVC2019_64_Ninja/deps/
+            C:/Dreamweave/MSVC2019_64_Ninja/*.ninja
           key: ${{ runner.os }}-deps
 
       - name: Install Building Dependencies
@@ -69,11 +69,11 @@ jobs:
       - name: Configure
         if: steps.cache-WinDeps.outputs.cache-hit == 'true'
         run: |
-          CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2022 -d -e
+          CI/before_script.msvc.sh -C -V -N -k -p Win64 -v 2019 -d -e
 
       - name: Build
         run: |
-          cd MSVC2022_64_Ninja
+          cd MSVC2019_64_Ninja
           source activate_msvc.sh
           ninja -f build-${{ matrix.BUILD_TYPE }}.ninja
 
