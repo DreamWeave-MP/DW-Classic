@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# Add a param to input the MSVC version used instead of assuming it
 set -e
 
 if [ -z $1 ]; then
@@ -38,9 +38,9 @@ DOCS=( \
     )
 
 mkdir dreamweave-build \
-    && mv MSVC2022_64_Ninja/$BUILD_TYPE/resources/ dreamweave-build/ \
-    && mv MSVC2022_64_NINJA/$BUILD_TYPE/osgPlugins-3.6.5 dreamweave-build \
-    && mv MSVC2022_64_NINJA/$BUILD_TYPE/platforms dreamweave-build \
+    && mv MSVC2019_64_Ninja/$BUILD_TYPE/resources/ dreamweave-build/ \
+    && mv MSVC2019_64_NINJA/$BUILD_TYPE/osgPlugins-3.6.5 dreamweave-build \
+    && mv MSVC2019_64_NINJA/$BUILD_TYPE/platforms dreamweave-build \
     && cd dreamweave-build
 
 for DOC in "${DOCS[@]}"; do
