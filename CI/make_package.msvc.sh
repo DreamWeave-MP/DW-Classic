@@ -51,7 +51,7 @@ for REQ in "${PACKAGE_REQS[@]}"; do
     find .. -name "$REQ" -exec mv "{}" . \; 2> /dev/null || true
 done
 
-find ../MSVC2022_64_Ninja/$BUILD_TYPE -name "*.dll" -exec cp  "{}" . \;
+find ../MSVC2019_64_Ninja/$BUILD_TYPE -name "*.dll" -exec cp  "{}" . \;
 
 git clone https://github.com/DreamWeave-MP/CoreScripts.git server/
 
