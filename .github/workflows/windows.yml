@@ -48,15 +48,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            C:/Dreamweave/deps/ICU-70_1/
-            C:/Dreamweave/deps/LuaJIT/
-            C:/Dreamweave/deps/LZ4_1.9.2/
-            C:/Dreamweave/deps/openal-soft-1.23.0-bin/
-            C:/Dreamweave/deps/SDL2-2.24.0/
-            C:/Dreamweave/deps/zlib-1.2.11-msvc2017-win64/
-            C:/Dreamweave/extern/raknet
-            C:/Dreamweave/MSVC2019_64_Ninja/deps/
-            C:/Dreamweave/MSVC2019_64_Ninja/*.ninja
+            C:/DW-Classic/extern/raknet
+            C:/DW-Classic/MSVC2019_64_Ninja/deps/
+            C:/DW-Classic/MSVC2019_64_Ninja/*.ninja
           key: ${{ runner.os }}-deps
 
       - name: Install Building Dependencies
@@ -85,5 +79,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          path: ./dreamweave-build
+          path: C:/DW-Classic/dreamweave-build
           name: dreamweave_windows-${{ matrix.BUILD_TYPE }}
