@@ -135,9 +135,9 @@ struct build_indices : build_indices<N - 1, N - 1, Is...> {};
 template <std::size_t... Is> struct build_indices<0, Is...> : indices<Is...> {};
 template <std::size_t N> using IndicesFor = build_indices<N>;
 
-template <size_t... Indices> LuaFuctionData *functions(indices<Indices...>) {
+template <size_t... Indices> LuaFunctionData *functions(indices<Indices...>) {
 
-  static LuaFuctionData functions_[sizeof...(Indices)]{F_<Indices>::F...};
+  static LuaFunctionData functions_[sizeof...(Indices)]{F_<Indices>::F...};
 
   static_assert(sizeof(functions_) / sizeof(functions_[0]) ==
                     sizeof(ScriptFunctions::functions) /
