@@ -81,10 +81,9 @@ jobs:
       - name: Package
         run: |
           CI/make_package.msvc.sh ${{ matrix.BUILD_TYPE }}
-          ls -R
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          path: C:/Dreamweave/dreamweave-build
+          path: ./dreamweave-build
           name: dreamweave_windows-${{ matrix.BUILD_TYPE }}
