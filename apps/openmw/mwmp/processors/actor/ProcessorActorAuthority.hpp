@@ -32,6 +32,8 @@ namespace mwmp
                 if (isLocal())
                 {
                     LOG_APPEND(TimedLog::LOG_INFO, "- The new authority is me");
+                    // We're still uninitializing dedicated actors when we get authority,
+                    // but AI behavior will be controlled by the server
                     cell->uninitializeDedicatedActors();
                     cell->initializeLocalActors();
                     cell->updateLocal(true);

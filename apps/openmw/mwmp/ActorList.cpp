@@ -90,28 +90,29 @@ void ActorList::addAiActor(BaseActor baseActor)
 
 void ActorList::addAiActor(const MWWorld::Ptr& actorPtr, const MWWorld::Ptr& targetPtr, unsigned int aiAction)
 {
-    mwmp::BaseActor baseActor;
-    baseActor.refId  = actorPtr.getCellRef().getRefId();
-    baseActor.refNum = actorPtr.getCellRef().getRefNum().mIndex;
-    baseActor.mpNum = actorPtr.getCellRef().getMpNum();
-
+    mwmp::BaseActor baseActor = mwmp::BaseActor(actorPtr);
     baseActor.aiAction = aiAction;
-    baseActor.aiTarget = MechanicsHelper::getTarget(targetPtr);
 
-    LOG_MESSAGE_SIMPLE(TimedLog::LOG_INFO, "Preparing to send ID_ACTOR_AI about %s %i-%i\n- action: %i",
-                       baseActor.refId.c_str(), baseActor.refNum, baseActor.mpNum, aiAction);
-
-    if (baseActor.aiTarget.isPlayer)
+    if (targetPtr)
     {
-        LOG_MESSAGE_SIMPLE(TimedLog::LOG_INFO, "- Has player target %s",
-            targetPtr.getClass().getName(targetPtr).c_str());
-    }
-    else
-    {
-        LOG_MESSAGE_SIMPLE(TimedLog::LOG_INFO, "- Has actor target %s %i-%i",
-            targetPtr.getCellRef().getRefId().c_str(), baseActor.aiTarget.refNum, baseActor.aiTarget.mpNum);
+        baseActor.hasAiTarget = true;
+
+        if (targetPtr == MWBase::Environment::get().getWorld()->getPlayerPtr())
+        {
+            baseActor.aiTarget.isPlayer = true;
+            baseActor.aiTarget.guid = Main::get().getLocalPlayer()->guid;
+        }
+        else
+        {
+            baseActor.aiTarget.isPlayer = false;
+            baseActor.aiTarget.refId = targetPtr.getCellRef().getRefId();
+            baseActor.aiTarget.refNum = targetPtr.getCellRef().getRefNum().mIndex;
+            baseActor.aiTarget.mpNum = targetPtr.getCellRef().getMpNum();
+        }
     }
 
+    // Any client can now report AI behavior for any actor
+    // The server will decide what to do with the information
     addAiActor(baseActor);
 }
 

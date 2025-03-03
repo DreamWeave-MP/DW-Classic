@@ -76,33 +76,51 @@ void Cell::removePlayer(Player *player, bool cleanPlayer)
 
 void Cell::readActorList(unsigned char packetID, const mwmp::BaseActorList *newActorList)
 {
-    for (unsigned int i = 0; i < newActorList->count; i++)
+    for (const auto &newActor : newActorList->baseActors)
     {
-        mwmp::BaseActor newActor = newActorList->baseActors.at(i);
-        mwmp::BaseActor *cellActor;
+        bool foundActor = false;
 
-        if (containsActor(newActor.refNum, newActor.mpNum))
+        // If there's already an Actor with this refNum and mpNum in this cell, update it
+        for (auto &actor : cellActorList.baseActors)
         {
-            cellActor = getActor(newActor.refNum, newActor.mpNum);
-
-            switch (packetID)
+            if (actor.refNum == newActor.refNum && actor.mpNum == newActor.mpNum)
             {
-            case ID_ACTOR_POSITION:
+                if (packetID == ID_ACTOR_POSITION)
+                {
+                    actor.position = newActor.position;
+                    actor.direction = newActor.direction;
+                }
+                else if (packetID == ID_ACTOR_STATS_DYNAMIC)
+                {
+                    actor.creatureStats.mDynamic[0] = newActor.creatureStats.mDynamic[0];
+                    actor.creatureStats.mDynamic[1] = newActor.creatureStats.mDynamic[1];
+                    actor.creatureStats.mDynamic[2] = newActor.creatureStats.mDynamic[2];
+                }
+                else if (packetID == ID_ACTOR_EQUIPMENT)
+                {
+                    for (int i = 0; i < 19; ++i)
+                        actor.equipmentItems[i] = newActor.equipmentItems[i];
+                }
+                else if (packetID == ID_ACTOR_AI)
+                {
+                    // Store AI data on the server
+                    actor.aiAction = newActor.aiAction;
+                    actor.aiDistance = newActor.aiDistance;
+                    actor.aiDuration = newActor.aiDuration;
+                    actor.aiShouldRepeat = newActor.aiShouldRepeat;
+                    actor.aiCoordinates = newActor.aiCoordinates;
+                    actor.hasAiTarget = newActor.hasAiTarget;
+                    
+                    if (actor.hasAiTarget)
+                        actor.aiTarget = newActor.aiTarget;
+                }
 
-                cellActor->hasPositionData = true;
-                cellActor->position = newActor.position;
-                break;
-
-            case ID_ACTOR_STATS_DYNAMIC:
-
-                cellActor->hasStatsDynamicData = true;
-                cellActor->creatureStats.mDynamic[0] = newActor.creatureStats.mDynamic[0];
-                cellActor->creatureStats.mDynamic[1] = newActor.creatureStats.mDynamic[1];
-                cellActor->creatureStats.mDynamic[2] = newActor.creatureStats.mDynamic[2];
+                foundActor = true;
                 break;
             }
         }
-        else
+
+        if (!foundActor)
             cellActorList.baseActors.push_back(newActor);
     }
 
@@ -123,14 +141,15 @@ bool Cell::containsActor(int refNum, int mpNum)
 
 mwmp::BaseActor *Cell::getActor(int refNum, int mpNum)
 {
-    for (unsigned int i = 0; i < cellActorList.baseActors.size(); i++)
+    for (auto &actor : cellActorList.baseActors)
     {
-        mwmp::BaseActor *actor = &cellActorList.baseActors.at(i);
-
-        if (actor->refNum == refNum && actor->mpNum == mpNum)
-            return actor;
+        if (actor.refNum == refNum && actor.mpNum == mpNum)
+        {
+            return &actor;
+        }
     }
-    return 0;
+
+    return nullptr;
 }
 
 void Cell::removeActors(const mwmp::BaseActorList *newActorList)
@@ -238,4 +257,16 @@ void Cell::sendToLoaded(mwmp::ObjectPacket *objectPacket, mwmp::BaseObjectList *
 std::string Cell::getShortDescription() const
 {
     return cell.getShortDescription();
+}
+
+// New method to check if an actor is currently executing an AI package
+bool Cell::isActorAiActive(int refNum, int mpNum)
+{
+    mwmp::BaseActor *actor = getActor(refNum, mpNum);
+    
+    if (actor == nullptr)
+        return false;
+        
+    // Actions other than CANCEL are considered active
+    return actor->aiAction != mwmp::BaseActorList::CANCEL;
 }

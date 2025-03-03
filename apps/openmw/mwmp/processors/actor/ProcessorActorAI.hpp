@@ -19,6 +19,8 @@ namespace mwmp
         {
             LOG_MESSAGE_SIMPLE(TimedLog::LOG_INFO, "Received %s about %s", strPacketID.c_str(), actorList.cell.getShortDescription().c_str());
 
+            // Apply AI actions regardless of cell authority
+            // The server is now the authority for AI behavior
             Main::get().getCellController()->readAi(actorList);
         }
     };

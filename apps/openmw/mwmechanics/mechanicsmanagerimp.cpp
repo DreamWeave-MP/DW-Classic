@@ -1629,7 +1629,6 @@ namespace MWMechanics
         const MWMechanics::NpcStats& victimStats = victim.getClass().getNpcStats(victim);
         const MWWorld::Ptr &player = getPlayer();
         bool canCommit = attacker == player && canCommitCrimeAgainst(victim, attacker);
-
         // For now we report only about crimes of player and player's followers
         if (attacker != player)
         {
@@ -2054,3 +2053,4 @@ namespace MWMechanics
         return mActors.isTurningToPlayer(ptr);
     }
 }
+

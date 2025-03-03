@@ -30,6 +30,7 @@ public:
     bool containsActor(int refNum, int mpNum);
     mwmp::BaseActor *getActor(int refNum, int mpNum);
     void removeActors(const mwmp::BaseActorList *newActorList);
+    bool isActorAiActive(int refNum, int mpNum);
 
     RakNet::RakNetGUID *getAuthority();
     void setAuthority(const RakNet::RakNetGUID& guid);

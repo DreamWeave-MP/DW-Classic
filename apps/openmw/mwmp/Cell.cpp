@@ -31,21 +31,18 @@ Cell::~Cell()
 
 void Cell::updateLocal(bool forceUpdate)
 {
-    if (localActors.empty())
+    // Don't try to update a cell that shouldn't have LocalActors initialized in it
+    if (!hasLocalAuthority())
         return;
-
-    const float timeoutSec = 0.025;
-
-    if (!forceUpdate && (updateTimer += MWBase::Environment::get().getFrameDuration()) < timeoutSec)
-        return;
-    else
-        updateTimer = 0;
 
     CellController *cellController = Main::get().getCellController();
-    ActorList *actorList = mwmp::Main::get().getNetworking()->getActorList();
+    MWWorld::CellStore *cellStore = getCellStore();
+    ActorList *actorList = Main::get().getNetworking()->getActorList();
     actorList->reset();
+    actorList->cell = *cellStore->getCell();
 
-    actorList->cell = *store->getCell();
+    // Keep track of actors we've already initialized LocalActors for
+    std::map<std::string, bool> initializedLocalActors;
 
     for (auto it = localActors.begin(); it != localActors.end();)
     {
@@ -112,6 +109,10 @@ void Cell::updateLocal(bool forceUpdate)
     actorList->sendAttackActors();
     actorList->sendCastActors();
     actorList->sendCellChangeActors();
+    
+    // Always send AI actions from our Local actors
+    // The server will decide what to do with the information
+    actorList->sendAiActors();
 }
 
 void Cell::updateDedicated(float dt)
@@ -354,8 +355,8 @@ void Cell::readAi(ActorList& actorList)
         }
     }
 
-    if (hasLocalAuthority())
-        uninitializeDedicatedActors(actorList);
+    // No longer need to check for local authority
+    // AI is now controlled by the server
 }
 
 void Cell::readAttack(ActorList& actorList)
