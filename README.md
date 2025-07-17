@@ -1,3 +1,7 @@
+EDIT: Dreamweave-Classic is now a dead project, as of 07/17/25. Due to upstream changes in GitHub's build environment, it is now no longer physically possible to compile DW-Classic without making edits to the source code, which is pointless since these are not problems OpenMW proper is affected by.
+
+For further engine developments, refer to the [Dreamweave-MP organization on GitLab](https://gitlab.com/dreamweave-mp). 
+
 Dreamweave
 ======
 
